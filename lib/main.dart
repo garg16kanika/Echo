@@ -14,8 +14,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Echo',
-      theme: ThemeData(useMaterial3: true)
-          .copyWith(scaffoldBackgroundColor: Pallete.whiteColor),
+      theme: ThemeData.light(useMaterial3: true).copyWith(
+        scaffoldBackgroundColor: Pallete.whiteColor,
+        appBarTheme: AppBarTheme(color: Pallete.whiteColor),
+      ),
       home: const HomeScreen(),
     );
   }

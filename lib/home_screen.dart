@@ -1,8 +1,8 @@
 import 'package:echo/pallete.dart';
 import 'package:echo/suggestion_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +12,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  SpeechToText _speechToText = SpeechToText();
+  String _lastWords = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initSpeech();
+  }
+
+  Future<void> _initSpeech() async {
+    await _speechToText.initialize();
+    setState(() {});
+  }
+
+  Future<void> _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }
+
+  Future<void> _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _speechToText.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: 123,
                   decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                     image: DecorationImage(
                       image: AssetImage('assets/images/virtualAssistant.png'),
                     ),
@@ -55,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius:
                     BorderRadius.circular(20).copyWith(topLeft: Radius.zero),
               ),
-              child: Padding(
+              child: const Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Hey Good Morning, what can I do for you?',
@@ -66,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: const EdgeInsets.fromLTRB(32, 20, 10, 10),
               child: Text(
                 'Here are some suggestions',
@@ -77,28 +116,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Pallete.mainFontColor),
               ),
             ),
-            SuggestionBox(
-                boxColor: Pallete.firstSuggestionBoxColor,
-                description:
-                    'A smarter way to stay organized and informed with ChatGPT',
-                headerText: 'chatGPT'),
-            SuggestionBox(
-                boxColor: Pallete.secondSuggestionBoxColor,
-                description:
-                    'Get inspired and stay creative with your personal assistant powered by Dall-E',
-                headerText: 'Dall-E'),
-            SuggestionBox(
-                boxColor: Pallete.thirdSuggestionBoxColor,
-                description:
-                    'Get the best of both worlds with a voice assistant powered by Dall-E and ChatGPT',
-                headerText: 'Smart Voice Assistant'),
+            Column(
+              children: const [
+                SuggestionBox(
+                    boxColor: Pallete.firstSuggestionBoxColor,
+                    description:
+                        'A smarter way to stay organized and informed with ChatGPT',
+                    headerText: 'chatGPT'),
+                SuggestionBox(
+                    boxColor: Pallete.secondSuggestionBoxColor,
+                    description:
+                        'Get inspired and stay creative with your personal assistant powered by Dall-E',
+                    headerText: 'Dall-E'),
+                SuggestionBox(
+                    boxColor: Pallete.thirdSuggestionBoxColor,
+                    description:
+                        'Get the best of both worlds with a voice assistant powered by Dall-E and ChatGPT',
+                    headerText: 'Smart Voice Assistant'),
+              ],
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Pallete.firstSuggestionBoxColor,
-        onPressed: () {},
-        child: Icon(Icons.mic),
+        onPressed: () async {
+          if (await _speechToText.hasPermission &&
+              _speechToText.isNotListening) {
+            await _startListening();
+          } else if (_speechToText.isListening) {
+            await _stopListening();
+          } else {
+            _initSpeech();
+          }
+        },
+        child: const Icon(Icons.mic),
       ),
     );
   }
