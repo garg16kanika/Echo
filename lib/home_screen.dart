@@ -16,60 +16,87 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ECHO'),
+        title: const Text('ECHO'),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
+        leading: const Icon(Icons.menu),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
               children: [
-                Container(
-                  height: 120,
-                  width: 120,
-                  margin: EdgeInsets.only(top: 4),
-                  decoration: BoxDecoration(
-                    color: Pallete.assistantCircleColor,
-                    borderRadius: BorderRadius.circular(60),
+                Center(
+                  child: Container(
+                    height: 120,
+                    width: 120,
+                    margin: const EdgeInsets.only(top: 4),
+                    decoration: const BoxDecoration(
+                      color: Pallete.assistantCircleColor,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-                Image.asset('assets/images/virtualAssistant.png'),
+                Container(
+                  height: 123,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/virtualAssistant.png'),
+                    ),
+                  ),
+                ),
               ],
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 40).copyWith(top: 30),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
-                border: Border.all(),
+                border: Border.all(color: Pallete.borderColor),
                 borderRadius:
                     BorderRadius.circular(20).copyWith(topLeft: Radius.zero),
               ),
-              child: Text('Hey Good Morning what can I do for you?'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Hey Good Morning, what can I do for you?',
+                  style: TextStyle(
+                      fontFamily: 'Cera Pro',
+                      fontSize: 25,
+                      color: Pallete.mainFontColor),
+                ),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              child: Text('Here are some suggestions'),
+              padding: const EdgeInsets.fromLTRB(32, 20, 10, 10),
+              child: Text(
+                'Here are some suggestions',
+                style: TextStyle(
+                    fontFamily: 'Cera Pro',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Pallete.mainFontColor),
+              ),
             ),
             SuggestionBox(
                 boxColor: Pallete.firstSuggestionBoxColor,
-                description: '',
-                headerText: ''),
+                description:
+                    'A smarter way to stay organized and informed with ChatGPT',
+                headerText: 'chatGPT'),
             SuggestionBox(
                 boxColor: Pallete.secondSuggestionBoxColor,
-                description: '',
-                headerText: ''),
+                description:
+                    'Get inspired and stay creative with your personal assistant powered by Dall-E',
+                headerText: 'Dall-E'),
             SuggestionBox(
                 boxColor: Pallete.thirdSuggestionBoxColor,
-                description: '',
-                headerText: ''),
+                description:
+                    'Get the best of both worlds with a voice assistant powered by Dall-E and ChatGPT',
+                headerText: 'Smart Voice Assistant'),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Pallete.firstSuggestionBoxColor,
         onPressed: () {},
         child: Icon(Icons.mic),
       ),
